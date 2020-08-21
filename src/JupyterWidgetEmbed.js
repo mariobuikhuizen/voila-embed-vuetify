@@ -1,11 +1,14 @@
 import Vue from 'vue'; // eslint-disable-line import/no-unresolved
-import vuetify from 'vuetify'; // eslint-disable-line import/no-unresolved
+import Vuetify, * as vuetifyComponents from 'vuetify/lib'; // eslint-disable-line import/no-unresolved
 import { addCompiler } from '@mariobuikhuizen/vue-compiler-addon/dist/vue-compiler-addon.esm';
-import 'material-design-icons-iconfont/dist/material-design-icons.css';
-import '@mdi/font/css/materialdesignicons.css';
 import { provideWidget, requestWidget } from './widgetLocator';
 
-Vue.use(vuetify);
+Vue.use(Vuetify, {
+    components: Object.entries(vuetifyComponents)
+        .reduce((accum, [k, v]) => ((k.startsWith('V'))
+            ? ({ ...accum, [k]: v })
+            : accum), {}),
+});
 addCompiler(Vue);
 
 let requirejs;

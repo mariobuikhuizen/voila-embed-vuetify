@@ -70,3 +70,29 @@ $ yarn serve
 ```
 
 The example site is now available on http://localhost:8080
+
+Integration in a standard vue-cli project
+-----------------------------------------
+
+Install the library:
+```
+$ yarn add voila-embed-vuetify
+```
+
+Add voila-embed-vuetify to `transpileDependencies` in `vue.config.js` 
+```javascript
+module.exports = {
+  "transpileDependencies": [
+    "vuetify", "voila-embed-vuetify"
+  ],
+}
+```
+
+Adapt 'babel.config.js' to use `usebuildIns: "entry"`:
+```javascript
+module.exports = {
+  presets: [
+    ['@vue/cli-plugin-babel/preset', { useBuiltIns: "entry" }]
+  ]
+}
+```

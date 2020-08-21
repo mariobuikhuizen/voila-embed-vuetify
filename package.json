@@ -7,32 +7,21 @@
     "url": "https://github.com/mariobuikhuizen/voila-embed-vuetify.git"
   },
   "version": "0.0.1",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "scripts": {
-    "build": "babel src --out-dir lib",
     "lint": "eslint src"
   },
   "files": [
-    "src/**/*.js",
-    "lib/**/*.js"
+    "src/**/*.js"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
-    "@mariobuikhuizen/vue-compiler-addon": "^2.6.10-alpha.1",
-    "@mdi/font": "^4",
-    "material-design-icons-iconfont": "^5"
+    "@mariobuikhuizen/vue-compiler-addon": "^2.6.10-alpha.1"
   },
   "peerDependencies": {
-    "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vuetify": "^2.2.11"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.11.1",
-    "@babel/plugin-transform-runtime": "^7.11.0",
-    "@babel/preset-env": "^7.11.0",
-    "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
@@ -47,14 +36,6 @@
       "plugin:vue/essential",
       "eslint:recommended"
     ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
     "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+  }
 }
