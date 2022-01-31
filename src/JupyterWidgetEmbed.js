@@ -26,30 +26,49 @@ function getWidgetManager(voila, kernel) {
                     kernel,
                     kernelChanged: {
                         connect: () => {
-                        },
+                        }
                     },
                     statusChanged: {
                         connect: () => {
-                        },
+                        }
                     },
                 },
                 saveState: {
                     connect: () => {
+                    }
+                },
+                /* voila >= 0.2.8 */
+                sessionContext: {
+                    session: {
+                        kernel
+                    },
+                    kernelChanged: {
+                        connect: () => {
+                        }
+                    },
+                    statusChanged: {
+                        connect: () => {
+                        }
+                    },
+                    connectionStatusChanged: {
+                        connect: () => {
+                        }
                     },
                 },
             };
 
             const settings = {
-                saveState: false,
+                saveState: false
             };
 
             const rendermime = new voila.RenderMimeRegistry({
-                initialFactories: voila.standardRendererFactories,
+                initialFactories: voila.standardRendererFactories
             });
 
             return new voila.WidgetManager(context, rendermime, settings);
+        } else {
+            throw e;
         }
-        throw e;
     }
 }
 
@@ -66,7 +85,7 @@ async function init(voilaUrl, notebook) {
     }
     notebooksLoaded[notebookKey] = true;
 
-    const res = await fetch(`${voilaUrl}/voila/render/${notebook}`);
+    const res = await fetch(`${voilaUrl}/voila/render/${notebook}`, {credentials: 'include'});
     const json = await res.json();
 
     if (!voilaLoaded) {
@@ -94,6 +113,11 @@ async function init(voilaUrl, notebook) {
         define('vue', [], () => Vue);
         (async () => {
             const kernel = await voila.connectKernel(`${voilaUrl}${json.baseUrl}`, json.kernelId);
+
+            /* Workaround for the 3-second kernel connection delay on start up. Can be removed when
+             * https://github.com/jupyterlab/jupyterlab/pull/10321 is released and used by Voila */
+            kernel._kernelSession = '_RESTARTING_';
+
             const widgetManager = getWidgetManager(voila, kernel);
             await widgetManager._build_models();
 
