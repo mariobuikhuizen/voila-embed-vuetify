@@ -107,14 +107,8 @@ module.exports = {
 
 Dev install
 -----------
-In the main directory run:
-```
-$(vev) yarn link
-```
 
-In the example directory run:
+Run the example normally, then from the main directory copy after a change:
 ```
-(vev) $ yarn
-(vev) $ yarn link voila-embed-vuetify
-(vev) $ yarn serve
+$ cp -r src package.json example/node_modules/voila-embed-vuetify
 ```
