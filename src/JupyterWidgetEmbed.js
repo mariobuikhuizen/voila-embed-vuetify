@@ -37,6 +37,24 @@ function getWidgetManager(voila, kernel) {
                     connect: () => {
                     },
                 },
+                /* voila >= 0.2.8 */
+                sessionContext: {
+                    session: {
+                        kernel
+                    },
+                    kernelChanged: {
+                        connect: () => {
+                        },
+                    },
+                    statusChanged: {
+                        connect: () => {
+                        },
+                    },
+                    connectionStatusChanged: {
+                        connect: () => {
+                        },
+                    },
+                },
             };
 
             const settings = {
@@ -48,8 +66,9 @@ function getWidgetManager(voila, kernel) {
             });
 
             return new voila.WidgetManager(context, rendermime, settings);
+        } else {
+            throw e;
         }
-        throw e;
     }
 }
 
@@ -57,7 +76,7 @@ const notebooksLoaded = {};
 
 let voilaLoaded = false;
 
-async function init(voilaUrl, notebook) {
+async function init(voilaUrl, notebook, requestOptions) {
     addVoilaTags(voilaUrl);
 
     const notebookKey = `${voilaUrl}${notebook}`;
@@ -65,8 +84,7 @@ async function init(voilaUrl, notebook) {
         return;
     }
     notebooksLoaded[notebookKey] = true;
-
-    const res = await fetch(`${voilaUrl}/voila/render/${notebook}`);
+    const res = await fetch(`${voilaUrl}/voila/render/${notebook}`, requestOptions);
     const json = await res.json();
 
     if (!voilaLoaded) {
@@ -94,6 +112,11 @@ async function init(voilaUrl, notebook) {
         define('vue', [], () => Vue);
         (async () => {
             const kernel = await voila.connectKernel(`${voilaUrl}${json.baseUrl}`, json.kernelId);
+
+            /* Workaround for the 3-second kernel connection delay on start up. Can be removed when
+             * https://github.com/jupyterlab/jupyterlab/pull/10321 is released and used by Voila */
+            kernel._kernelSession = '_RESTARTING_';
+
             const widgetManager = getWidgetManager(voila, kernel);
             await widgetManager._build_models();
 
@@ -141,7 +164,7 @@ function addVoilaTags(voilaUrl) {
 
 export default {
     name: 'JupyterWidgetEmbed',
-    props: ['voila-url', 'notebook', 'mount-id'],
+    props: ['voila-url', 'notebook', 'mount-id', 'request-options'],
     data() {
         return {
             renderFn: undefined,
@@ -149,7 +172,7 @@ export default {
         };
     },
     created() {
-        init(this.voilaUrl, this.notebook);
+        init(this.voilaUrl, this.notebook, this.requestOptions);
     },
     mounted() {
         requestWidget(this.$props)
