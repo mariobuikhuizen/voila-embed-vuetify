@@ -58,15 +58,23 @@ any other widget.
 Example
 -------
 
+Make an environment:
+```
+$ conda create -n vev -c conda-forge voila bqplot ipyvuetify nodejs=14
+$ conda activate vev
+(vev) $ pip install voila-embed
+(vev) $ npm install -g yarn
+```
+
 In the example directory run:
 ```
-$ voila --no-browser --template=embed --enable_nbextensions=True --Voila.tornado_settings="{'allow_origin': 'http://localhost:8080', 'allow_credentials': True}" --port=8000
+(vev) $ voila --no-browser --template=embed --enable_nbextensions=True --Voila.tornado_settings="{'allow_origin': 'http://localhost:8080', 'allow_credentials': True}" --port=8000
 ```
 
 In another terminal in the example directory run:
 ```
-$ yarn
-$ yarn serve
+(vev) $ yarn
+(vev) $ yarn serve
 ```
 
 The example site is now available on http://localhost:8080
@@ -95,4 +103,12 @@ module.exports = {
     ['@vue/cli-plugin-babel/preset', { useBuiltIns: "entry" }]
   ]
 }
+```
+
+Dev install
+-----------
+
+Run the example normally, then from the main directory copy after a change:
+```
+$ cp -r src package.json example/node_modules/voila-embed-vuetify
 ```
