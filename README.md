@@ -60,7 +60,7 @@ Example
 
 In the example directory run:
 ```
-$ voila --no-browser --template=embed --enable_nbextensions=True --Voila.tornado_settings="{'allow_origin': 'http://localhost:8080'}" --port=8000
+$ voila --no-browser --template=embed --enable_nbextensions=True --Voila.tornado_settings="{'allow_origin': 'http://localhost:8080', 'allow_credentials': True}" --port=8000
 ```
 
 In another terminal in the example directory run:
@@ -79,7 +79,7 @@ Install the library:
 $ yarn add voila-embed-vuetify
 ```
 
-Add voila-embed-vuetify to `transpileDependencies` in `vue.config.js` 
+Add voila-embed-vuetify to `transpileDependencies` in `vue.config.js`
 ```javascript
 module.exports = {
   "transpileDependencies": [

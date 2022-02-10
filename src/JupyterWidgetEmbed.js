@@ -26,16 +26,16 @@ function getWidgetManager(voila, kernel) {
                     kernel,
                     kernelChanged: {
                         connect: () => {
-                        }
+                        },
                     },
                     statusChanged: {
                         connect: () => {
-                        }
+                        },
                     },
                 },
                 saveState: {
                     connect: () => {
-                    }
+                    },
                 },
                 /* voila >= 0.2.8 */
                 sessionContext: {
@@ -44,25 +44,25 @@ function getWidgetManager(voila, kernel) {
                     },
                     kernelChanged: {
                         connect: () => {
-                        }
+                        },
                     },
                     statusChanged: {
                         connect: () => {
-                        }
+                        },
                     },
                     connectionStatusChanged: {
                         connect: () => {
-                        }
+                        },
                     },
                 },
             };
 
             const settings = {
-                saveState: false
+                saveState: false,
             };
 
             const rendermime = new voila.RenderMimeRegistry({
-                initialFactories: voila.standardRendererFactories
+                initialFactories: voila.standardRendererFactories,
             });
 
             return new voila.WidgetManager(context, rendermime, settings);
@@ -76,7 +76,7 @@ const notebooksLoaded = {};
 
 let voilaLoaded = false;
 
-async function init(voilaUrl, notebook) {
+async function init(voilaUrl, notebook, requestOptions) {
     addVoilaTags(voilaUrl);
 
     const notebookKey = `${voilaUrl}${notebook}`;
@@ -84,8 +84,7 @@ async function init(voilaUrl, notebook) {
         return;
     }
     notebooksLoaded[notebookKey] = true;
-
-    const res = await fetch(`${voilaUrl}/voila/render/${notebook}`, {credentials: 'include'});
+    const res = await fetch(`${voilaUrl}/voila/render/${notebook}`, requestOptions);
     const json = await res.json();
 
     if (!voilaLoaded) {
@@ -165,7 +164,7 @@ function addVoilaTags(voilaUrl) {
 
 export default {
     name: 'JupyterWidgetEmbed',
-    props: ['voila-url', 'notebook', 'mount-id'],
+    props: ['voila-url', 'notebook', 'mount-id', 'request-options'],
     data() {
         return {
             renderFn: undefined,
@@ -173,7 +172,7 @@ export default {
         };
     },
     created() {
-        init(this.voilaUrl, this.notebook);
+        init(this.voilaUrl, this.notebook, this.requestOptions);
     },
     mounted() {
         requestWidget(this.$props)

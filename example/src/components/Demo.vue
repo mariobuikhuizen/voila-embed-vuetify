@@ -4,17 +4,20 @@
                 voila-url="http://localhost:8000"
                 notebook="bqplot_vuetify_example.ipynb"
                 mount-id="content-main"
+                :request-options=requestOptions
         ></jupyter-widget-embed>
         <jupyter-widget-embed
                 voila-url="http://localhost:8000"
                 notebook="notebook2.ipynb"
                 mount-id="dialog"
+                :request-options=requestOptions
         ></jupyter-widget-embed>
         <jupyter-widget-embed
                 style="margin-top: 40px"
                 voila-url="http://localhost:8000"
                 notebook="bqplot_vuetify_example.ipynb"
                 mount-id="histogram_bins2"
+                :request-options=requestOptions
         ></jupyter-widget-embed>
         <v-card v-if="sliderModel" class="ma-4 mx-auto" width="600">
             <v-card-title class="headline">Access widget models from the page</v-card-title>
@@ -33,6 +36,7 @@
                                 voila-url="http://localhost:8000"
                                 notebook="notebook2.ipynb"
                                 mount-id="event_demo"
+                                :request-options=requestOptions
                         ></jupyter-widget-embed>
                     </v-col>
                     <v-col class="flex-grow-1">
@@ -46,6 +50,7 @@
                                 voila-url="http://localhost:8000"
                                 notebook="notebook2.ipynb"
                                 mount-id="template_event_demo"
+                                :request-options=requestOptions
                         ></jupyter-widget-embed>
                     </v-col>
                     <v-col class="flex-grow-1">
@@ -61,6 +66,7 @@
                         voila-url="http://localhost:8000"
                         notebook="notebook2.ipynb"
                         mount-id="out"
+                        :request-options=requestOptions
                 ></jupyter-widget-embed>
             </v-card-text>
         </v-card>
@@ -79,6 +85,7 @@
             return {
                 sliderModel: null,
                 bins: null,
+                requestOptions: {"credentials": 'include'},
 
                 eventDemoModel: null,
                 templateEventDemoModel: null,
