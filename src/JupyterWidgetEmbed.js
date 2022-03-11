@@ -37,7 +37,7 @@ function getWidgetManager(voila, kernel) {
                 /* voila >= 0.2.8 */
                 sessionContext: {
                     session: {
-                        kernel
+                        kernel,
                     },
                     kernelChanged: {
                         connect: () => {
@@ -63,9 +63,8 @@ function getWidgetManager(voila, kernel) {
             });
 
             return new voila.WidgetManager(context, rendermime, settings);
-        } else {
-            throw e;
         }
+        throw e;
     }
 }
 
