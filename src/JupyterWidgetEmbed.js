@@ -11,9 +11,6 @@ Vue.use(Vuetify, {
 });
 addCompiler(Vue);
 
-let requirejs;
-let define;
-
 function getWidgetManager(voila, kernel) {
     try {
         /* voila < 0.1.8 */
@@ -40,7 +37,7 @@ function getWidgetManager(voila, kernel) {
                 /* voila >= 0.2.8 */
                 sessionContext: {
                     session: {
-                        kernel
+                        kernel,
                     },
                     kernelChanged: {
                         connect: () => {
@@ -66,9 +63,8 @@ function getWidgetManager(voila, kernel) {
             });
 
             return new voila.WidgetManager(context, rendermime, settings);
-        } else {
-            throw e;
         }
+        throw e;
     }
 }
 
@@ -77,7 +73,8 @@ const notebooksLoaded = {};
 let voilaLoaded = false;
 
 async function init(voilaUrl, notebook, requestOptions) {
-    addVoilaTags(voilaUrl);
+    const requireJsPromise = loadRequireJs(voilaUrl);
+    addVoilaCss(voilaUrl);
 
     const notebookKey = `${voilaUrl}${notebook}`;
     if (notebooksLoaded[notebookKey]) {
@@ -87,8 +84,9 @@ async function init(voilaUrl, notebook, requestOptions) {
     const res = await fetch(`${voilaUrl}/voila/render/${notebook}`, requestOptions);
     const json = await res.json();
 
+    await requireJsPromise;
     if (!voilaLoaded) {
-        requirejs.config({
+        window.requirejs.config({
             baseUrl: `${voilaUrl}${json.baseUrl}voila`,
             waitSeconds: 3000,
             map: {
@@ -103,13 +101,13 @@ async function init(voilaUrl, notebook, requestOptions) {
             .filter((extension) => !extension.includes('jupyter-vue'))
             .map((extension) => `${voilaUrl}${extension}`);
 
-        requirejs(extensions);
+        window.requirejs(extensions);
 
         voilaLoaded = true;
     }
 
-    requirejs(['static/voila'], (voila) => {
-        define('vue', [], () => Vue);
+    window.requirejs(['static/voila'], (voila) => {
+        window.define('vue', [], () => Vue);
         (async () => {
             const kernel = await voila.connectKernel(`${voilaUrl}${json.baseUrl}`, json.kernelId);
 
@@ -133,17 +131,21 @@ async function init(voilaUrl, notebook, requestOptions) {
     });
 }
 
-function addVoilaTags(voilaUrl) {
-    if (!document.getElementById('tag-requirejs')) {
+function loadRequireJs(voilaUrl) {
+    if (document.getElementById('tag-requirejs')) {
+        return Promise.resolve();
+    }
+    return new Promise((resolve, reject) => {
         const script = document.createElement('script');
         script.src = `${voilaUrl}/voila/static/require.min.js`;
         script.id = 'tag-requirejs';
-        script.onload = () => {
-            requirejs = window.requirejs;
-            define = window.define;
-        };
+        script.onload = resolve;
+        script.onerror = reject;
         document.head.appendChild(script);
-    }
+    });
+}
+
+function addVoilaCss(voilaUrl) {
     if (!document.getElementById('tag-index.css')) {
         const link = document.createElement('link');
         link.href = `${voilaUrl}/voila/static/index.css`;
@@ -185,7 +187,7 @@ export default {
                         this.$el.removeChild(this.$el.firstChild);
                     }
 
-                    requirejs(['@jupyter-widgets/base'], (widgets) => {
+                    window.requirejs(['@jupyter-widgets/base'], (widgets) => {
                         widgets.JupyterPhosphorWidget.attach(widgetView.pWidget, this.$el);
                     });
                 }
