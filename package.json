@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/mariobuikhuizen/voila-embed-vuetify.git"
   },
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint src"
